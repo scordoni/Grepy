@@ -1,4 +1,4 @@
-package edu.marist.gildein;
+package edu.marist.cordoni;
 
 import org.junit.jupiter.api.Test;
 
