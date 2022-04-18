@@ -3,6 +3,7 @@ package edu.marist.cordoni;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+//import java.util.regex.*;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -23,6 +24,8 @@ public final class App {
         //declare variables
         String file;
         String regex;
+        String nfaFile;
+        String dfaFile;
         String line;
         int returnCode = 0;
 
@@ -35,9 +38,32 @@ public final class App {
 
         System.out.println(" ");
 
-        System.out.println(cmdArgs.length);
+        System.out.println("Parameter Argument Length: " + cmdArgs.length);
 
         System.out.println(" ");
+
+        /*
+        if(cmdArgs.length == 2){
+
+            regex = args[0];
+
+            file = args[1]; 
+
+        }//if
+
+        else if (cmdArgs.length == 3){
+
+            nfaFile = args[0];
+
+            dfaFile = args[1];
+
+            regex = args[2];
+
+            file = args[3];
+
+        }//else
+
+        */
 
         regex = args[0];
 
@@ -45,9 +71,9 @@ public final class App {
 
         System.out.println(" ");
 
-        System.out.println(regex);
+        System.out.println("Regular Expression: " + regex);
 
-        System.out.println(file);
+        System.out.println("Input File: " + file);
 
         System.out.println(" ");
         
@@ -60,6 +86,15 @@ public final class App {
 
             //create scanner
             Scanner input = new Scanner(myFile);
+
+            //regex to NFA
+
+            RegEx.regex(regex);
+
+
+
+            System.out.println(" ");
+
             
             //if the file is empty we let the user know there is nothing in the file
             if(input.hasNext() == false) {
@@ -71,16 +106,14 @@ public final class App {
             //else we can run through the file to create the programs
             else {
 
+                System.out.println("Input File: ");
+
                 while(input.hasNext()) {
 
                     //while there is a next line we set it to a temp variable
                     line = input.nextLine();
 
                     System.out.println(line);
-
-                    //regex to NFA
-
-                    
 
                     //Check if NFA accepts
 
@@ -113,7 +146,7 @@ public final class App {
         } //catch  
 
         System.out.println(" ");
-        System.out.println("Hi World!");
+        System.out.println("Grep Completed");
 
         System.exit(returnCode);
 
