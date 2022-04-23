@@ -9,17 +9,29 @@ import java.util.ArrayList;
  */
 public class NFA {
 
+    static String traversalResult = "";
+
+    public static Graph nfa;
+
+    static State currentState;
+
+    static State rootState;
+
     
     //import the array from the Regex class 
     public static void createNFA(ArrayList<Character> regularExpression) {
 
-        Graph nfa = new Graph();
+        State currentState = new State();
+
+        State rootState = new State();
+
+        nfa = new Graph();
 
         State tempStateTo = new State();
 
         State tempStateFrom = new State();
 
-        State currentState = new State();
+        int j = 0;
 
 
         System.out.println(" ");
@@ -32,14 +44,14 @@ public class NFA {
             //if there is parenthesis in the regular expression
             if(RegEx.regExpressionArray.get(i).compareTo('(') == 0){
 
-                tempStateTo = currentState;
+                currentState.setLeftParenFlag(1);
 
 
             }//if
 
             else if(RegEx.regExpressionArray.get(i).compareTo(')') == 0){
 
-                tempStateFrom = currentState;
+                currentState.setRightParenFlag(1);
 
 
             }//else if
@@ -47,8 +59,13 @@ public class NFA {
             //if there is an "or" in the regular expression
             else if((RegEx.regExpressionArray.get(i).compareTo('+') == 0) | (RegEx.regExpressionArray.get(i).compareTo('|') == 0)){
 
+                Transition newTransition = new Transition();
 
+                newTransition.setId(RegEx.regExpressionArray.get(i+1).toString());
+                newTransition.setFrom(tempStateFrom);
+                newTransition.setTo(tempStateTo);
 
+                nfa.transitions.add(newTransition);
 
             }//else if
 
@@ -56,8 +73,7 @@ public class NFA {
             //if we have a kleene star in the regular expression
             else if(RegEx.regExpressionArray.get(i).compareTo('^') == 0){
 
-
-
+                //leave blank
 
             }//else if
 
@@ -66,9 +82,12 @@ public class NFA {
                 Transition newTransition = new Transition();
 
                 newTransition.setId("epsilon");
-                newTransition.setFrom(tempStateFrom);
-                newTransition.setTo(tempStateTo);
+                newTransition.setFrom(tempStateTo);
+                newTransition.setTo(tempStateFrom);
+                tempStateFrom.setAccepts(true);
+                tempStateTo.setAccepts(false);
 
+                nfa.transitions.add(newTransition);
 
             }//else if
 
@@ -80,8 +99,41 @@ public class NFA {
 
                 Transition newTransition = new Transition();
 
-                newStateFrom.setId("q0");
-                newStateTo.setId("q1");
+                if(j == 0){
+
+                    //create our start state
+                    newStateFrom.setId("q0");
+                    newStateFrom.setAccepts(false);
+                    rootState = newStateFrom;
+                    j++;
+
+                    newStateTo.setId("q1");
+                    newStateTo.setAccepts(true);
+                    currentState = newStateTo;
+                    j++;
+
+                    newStateFrom.setNext(newStateTo);
+                    newStateTo.setParent(newStateFrom);
+                }//if
+
+                else{
+
+                    //create our start state
+                    newStateFrom.setId("q" + j);
+                    newStateFrom.setAccepts(false);
+                    rootState = newStateFrom;
+                    j++;
+
+                    newStateTo.setId("q"+ j);
+                    newStateTo.setAccepts(true);
+                    currentState = newStateTo;
+                    j++;
+
+                    newStateFrom.setNext(newStateTo);
+                    newStateTo.setParent(newStateFrom);
+
+                }//else
+                
 
                 newTransition.setId(RegEx.regExpressionArray.get(i).toString());
                 newTransition.setFrom(newStateFrom);
@@ -92,7 +144,8 @@ public class NFA {
 
                 nfa.transitions.add(newTransition);
 
-                currentState = newStateTo;
+                tempStateFrom = newStateFrom;
+                tempStateTo = newStateTo;
 
             }//else
 
@@ -100,56 +153,89 @@ public class NFA {
 
         }//for
 
+        for(int i = 0 ; i < nfa.states.size(); i++){
+
+            System.out.println("State Id: " + nfa.states.get(i).getId());
+            System.out.println("Accepts: " + nfa.states.get(i).getAccepts());
+
+            if(nfa.states.get(i).getNext() != null){
+                System.out.println("Next: " + nfa.states.get(i).getNext().getId());
+            }//if
+
+            else{
+                System.out.println("Next: " + nfa.states.get(i).getNext());
+            }//else
+            
+            System.out.println(" ");
+
+        }//for
 
 
-        //System.out.println(Graph.states.)
+        for(int i = 0 ; i < nfa.transitions.size(); i++){
+
+            System.out.println("Transition Id: " + nfa.transitions.get(i).getId());
+            System.out.println("From: " + nfa.transitions.get(i).getFrom().getId());
+            System.out.println("To: " + nfa.transitions.get(i).getTo().getId());
+            
+            System.out.println(" ");
+
+        }//for
 
     }//createNFA
 
 
-
-    //do I then try to make it look like the delta function below?
-
     /*
-    * The transition function represented as an array.  The
-    * entry at delta[s,c-'0'] is an array of 0 or more ints,
-    * one for each possible move from state s on character c.
-    */
-    private static int[][][] delta = 
-        {{{0,1},{0}}, // delta[q0,0], delta[q0,1]
-        {{2},{}},    // delta[q1,0], delta[q1,1]
-        {{2},{2}}};  // delta[q2,0], delta[q2,1]
-
-    /**
     * Test whether there is some path for the NFA to reach
     * an accepting state, from the given state and reading
-    * the given string at the given character position.
-    * @param s the current state
-    * @param in the input string
-    * @param pos the index of the next character in the string
-    * @return true iff the NFA accepts on some path
     */
-    private static boolean accepts(int s, String in, int pos) {
-
-        if (pos==in.length()) { // if no more symbols to read
-      
-        return (s==2); // accept iff final state is q2
     
-        }//if
+    public static boolean accepts(String testline){
 
-        char c = in.charAt(pos++); // get char and advance
+        boolean accepts = false;
 
-        int[] nextStates;
+        State stateCurrent = nfa.states.get(0);
+
+        int j = 0;
+
+        String[] testArray = new String[testline.length()];
 
         try {
 
-            nextStates = delta[s][c-'0'];
-            System.out.print("\u03B4(q"+s+", "+c+ ") -> ");
+            testArray = testline.split("");
 
-            for (int i:nextStates) {
+            for(int i = 0 ; i < testArray.length; i++){
 
-                System.out.println("q"+i);
-      
+                if (testArray[i].compareToIgnoreCase(nfa.transitions.get(j).getId()) == 0){
+
+                    stateCurrent = nfa.transitions.get(j).getTo();
+                    j++;
+
+                    //for strings of length 1 made up of the accepting char
+                    if(testArray.length == 1){
+                        accepts = true;
+                    }//
+
+                }//If
+
+                //no transitions left going to look for epsilon
+                if(nfa.transitions.get(j).getId().compareToIgnoreCase("epsilon") == 0){
+
+                    if(stateCurrent.getAccepts() == true){
+                        accepts = true;
+                    }//if
+
+                    else{
+                        stateCurrent = nfa.transitions.get(j).getTo();
+                    
+                        if(stateCurrent.getAccepts() == true){
+                            accepts = true;
+                        }//if
+
+                    }//else
+
+                }//else
+                
+    
             }//for
 
         }//try
@@ -161,29 +247,8 @@ public class NFA {
 
         }//catch
 
-        // At this point, nextStates is an array of 0 or
-        // more next states.  Try each move recursively;
-        // if it leads to an accepting state return true.
-
-        for (int i=0; i < nextStates.length; i++) {
-
-            if (accepts(nextStates[i], in, pos)) return true;
-
-        }//for
-
-        return false; // all moves fail, return false
+        return accepts; // all moves fail, return false
     }//accepts
-
-
-    /**
-    * Test whether the NFA accepts the string.
-    * @param in the String to test
-    * @return true iff the NFA accepts on some path
-    */
-    public static boolean accepts(String in) {
-
-        return accepts(0, in, 0); // start in q0 at char 0
-
-    }//accepts
+    
 
 }//NFA Class

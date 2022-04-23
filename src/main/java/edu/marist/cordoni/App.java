@@ -88,10 +88,7 @@ public final class App {
             Scanner input = new Scanner(myFile);
 
             //regex to NFA
-
             RegEx.regex(regex);
-
-
 
             System.out.println(" ");
 
@@ -117,15 +114,15 @@ public final class App {
 
                     //Check if NFA accepts
 
-                    /*
+                    
                     if (NFA.accepts(line)) {
-                        System.out.println("Accepted: " + line);
+                        System.out.println("NFA Accepted: " + line);
                     }//if
 
                     else {
-                        System.out.println("Rejected: " + line);
+                        System.out.println("NFA Rejected: " + line);
                     }//else
-                        */  
+                         
 
                     //Check if DFA accepts
 
