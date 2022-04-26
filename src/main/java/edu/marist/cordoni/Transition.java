@@ -8,6 +8,7 @@ public class Transition {
     private String myId;
     private State myTo;
     private State myFrom;
+    private Transition myNext;
     
 
     /**
@@ -18,6 +19,7 @@ public class Transition {
 
         myTo = null;
         myFrom = null;
+        myNext = null;
         myId = new String();
 
     }//Transition
@@ -30,6 +32,7 @@ public class Transition {
     {
         myTo = newTo;
         myFrom = newFrom;
+        myNext = null;
         myId = newData;
         
     }//Transition
@@ -76,5 +79,20 @@ public class Transition {
      */
     public String getId()
     {return myId;}//get data
+
+    /**
+     * 
+     * the setter for the next vertex 
+     * @param newNext the incoming data of the vertex
+     */
+    public void setNext(Transition newNext)
+    {myNext = newNext;} //set data
+
+    /**
+     * The getter for the vertex 
+     * @return the incoming data of the vertex
+     */
+    public Transition getNext()
+    {return myNext;}//get data
     
 }//Transition

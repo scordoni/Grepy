@@ -116,11 +116,15 @@ public final class App {
 
                     
                     if (NFA.accepts(line)) {
+                        System.out.println(" ");
                         System.out.println("NFA Accepted: " + line);
+                        System.out.println(" ");
                     }//if
 
                     else {
+                        System.out.println(" ");
                         System.out.println("NFA Rejected: " + line);
+                        System.out.println(" ");
                     }//else
                          
 
@@ -128,6 +132,11 @@ public final class App {
 
 
                 } //while
+
+                System.out.println(" ");
+                System.out.println("DOT format outputed to DOT file");
+                System.out.println(" ");
+                //printNFADFA();
 
             } //else
 
@@ -148,4 +157,22 @@ public final class App {
         System.exit(returnCode);
 
     } //main
+
+
+    public static void printNFADFA(){
+
+        
+
+        for(int i = 0; i < NFA.nfa.states.size(); i++){
+
+            for(int j = 0; j < NFA.nfa.states.get(i).transitions.size(); j++){
+
+                System.out.println(NFA.nfa.states.get(i).getId() + " -> " + NFA.nfa.states.get(i).transitions.get(j).getTo().getId());
+
+            }//for
+
+        }//for
+
+
+    }//printNFADFA
 } //Class App.java

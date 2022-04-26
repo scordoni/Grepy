@@ -15,6 +15,7 @@ public class State {
     private boolean myAccepts;
     private int myLeftParenFlag;
     private int myRightParenFlag;
+    public  ArrayList <Transition> transitions = new ArrayList <Transition>();
 
     /**
      * The default Constructor for State
