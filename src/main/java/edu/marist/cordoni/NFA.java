@@ -15,6 +15,12 @@ public class NFA {
 
     static State currentState;
 
+    static int leftParenFlag;
+
+    static int rightParenFlag;
+
+    static State newStateroot;
+
     static State rootState;
 
     static ArrayList <String> alphabet = new ArrayList <String>();
@@ -29,9 +35,15 @@ public class NFA {
 
         nfa = new Graph();
 
+        State newStateroot = new State();
+
         State tempStateTo = new State();
 
         State tempStateFrom = new State();
+
+        State tempStateLeftParen = new State();
+
+        State tempStateRightParen = new State();
 
         Transition tempTransition = new Transition();
 
@@ -41,6 +53,10 @@ public class NFA {
 
         int j = 0;
 
+        leftParenFlag = 0;
+
+        rightParenFlag = 0;
+
 
         System.out.println(" ");
         System.out.println("Regular Expression Array: " + RegEx.regExpressionArray.toString());
@@ -49,10 +65,32 @@ public class NFA {
 
         for(int i = 0; i < RegEx.regExpressionArray.size(); i++){
 
+            //System.out.println("Current State ID " + currentState.getId());
+            //System.out.println("Left State ID " + tempStateLeftParen.getId());
+
             //if there is parenthesis in the regular expression
             if(RegEx.regExpressionArray.get(i).compareTo('(') == 0){
 
-                currentState.setLeftParenFlag(1);
+                //if the current state exists then mark its left paren flag
+                if(currentState.getId().compareToIgnoreCase(" ") == 0){
+
+                    //System.out.println("left par" + currentState.getId() + "k");
+
+                    currentState.setLeftParenFlag(1);
+
+                    tempStateLeftParen = currentState;
+
+                    leftParenFlag = 1;
+
+                }//if
+
+                //if the current state has not been set yet then we just set the general flag to 1
+                else{
+
+                    leftParenFlag = 1;
+
+                }//else
+                
 
 
             }//if
@@ -61,6 +99,9 @@ public class NFA {
 
                 currentState.setRightParenFlag(1);
 
+                tempStateRightParen = currentState;
+
+                rightParenFlag = 1;
 
             }//else if
 
@@ -81,27 +122,56 @@ public class NFA {
 
             else if(RegEx.regExpressionArray.get(i).compareTo('*') == 0){
 
-                Transition newTransition = new Transition();
+                if(rightParenFlag == 1){
 
-                newTransition.setId("epsilon");
-                newTransition.setFrom(tempStateTo);
-                newTransition.setTo(tempStateFrom);
-                tempStateFrom.setAccepts(true);
-                tempStateTo.setAccepts(false);
+                    Transition newTransition = new Transition();
 
-                tempStateTo.transitions.add(newTransition);
+                    newTransition.setId("epsilon");
+                    newTransition.setFrom(currentState);
 
-                tempTransition.setNext(newTransition);
+                    System.out.println("Flag " + leftParenFlag);
 
-                tempTransition = newTransition;
+                    if(leftParenFlag == 1){
+
+                        newTransition.setTo(tempStateLeftParen);
+
+                        tempStateLeftParen.setAccepts(true);
+                        
+                    }//if
+
+
+
+                    currentState.transitions.add(newTransition);
+
+                    tempTransition.setNext(newTransition);
+
+                    tempTransition = newTransition;
+
+                }//if
+
+                else{
+                    Transition newTransition = new Transition();
+
+                    newTransition.setId("epsilon");
+                    newTransition.setFrom(tempStateTo);
+                    newTransition.setTo(tempStateFrom);
+                    tempStateFrom.setAccepts(true);
+                    tempStateTo.setAccepts(false);
+
+                    tempStateTo.transitions.add(newTransition);
+
+                    tempTransition.setNext(newTransition);
+
+                    tempTransition = newTransition;
+
+                }
 
             }//else if
 
             //else we have a terminal symbol in our regular expression
             else{
 
-                //add to our alphabet
-                alphabet.add(RegEx.regExpressionArray.get(i).toString());
+
 
                 State newStateFrom1 = new State();
                 State newStateTo1 = new State();
@@ -110,16 +180,41 @@ public class NFA {
 
                 if(j == 0){
 
+                    //add to our alphabet
+                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
+
                     //create our start state
                     newStateFrom1.setId("q0");
                     newStateFrom1.setAccepts(false);
 
+                    if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
+
+                        tempStateLeftParen = newStateFrom1;
+
+                    }//if
+
+                    //set the root state
                     rootState = newStateFrom1;
+
+                    //if the left paren flag has been set then we give the attribute to
+                    //the first state
+                    if(leftParenFlag == 1){
+
+                        newStateFrom1.setLeftParenFlag(1);
+                        tempStateLeftParen = newStateFrom1;
+
+                    }//if
 
                     j++;
 
                     newStateTo1.setId("q1");
-                    newStateTo1.setAccepts(true);
+
+                    if(RegEx.regExpressionArray.get(i + 1) == null){
+                        newStateTo1.setAccepts(true);
+                    }//if
+
+                    
+
                     currentState = newStateTo1;
                     j++;
 
@@ -140,7 +235,10 @@ public class NFA {
                     tempTransition = newTransition;
                 }//if
 
-                else{
+                else if( (j != 0) && (alphabet.toString().contains(RegEx.regExpressionArray.get(i).toString()))){
+
+                    //add to our alphabet
+                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
 
                     State newStateFrom2 = new State();
                     State newStateTo2 = new State();
@@ -149,10 +247,20 @@ public class NFA {
                     newStateFrom2.setId("q" + j);
                     newStateFrom2.setAccepts(false);
                     
+                    if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
+
+                        tempStateLeftParen = newStateFrom1;
+
+                    }//if
+
                     j++;
 
                     newStateTo2.setId("q"+ j);
-                    newStateTo2.setAccepts(true);
+                    
+                    if(RegEx.regExpressionArray.get(i + 1) == null){
+                        newStateTo1.setAccepts(true);
+                    }//if
+                    
                     currentState = newStateTo2;
                     j++;
 
@@ -177,12 +285,22 @@ public class NFA {
 
 
                 if((i != 0) && ((RegEx.regExpressionArray.get(i-1).compareTo('+') == 0) || (RegEx.regExpressionArray.get(i-1).compareTo('|') == 0))){
+                    
+                    //add to our alphabet
+                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
+                    
+                    System.out.println(rootState.getId());
+                    
                     //create new root state
-                    State newStateroot = new State();
-
+                
                     newStateroot.setId("q");
                     newStateroot.setAccepts(false);
 
+                    if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
+
+                        tempStateLeftParen = newStateFrom1;
+
+                    }//if
 
                     Transition newTransition1 = new Transition();
 
@@ -221,7 +339,54 @@ public class NFA {
 
                     //tempTransition = newTransition;
 
-                }
+                }//if
+
+                if((i != 0) && (alphabet.toString().contains(RegEx.regExpressionArray.get(i-1).toString()))){
+                    
+                    //add to our alphabet
+                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
+
+                    State newStateTo2 = new State();
+
+                    newStateTo2.setId("q"+ j);
+                    
+                    if(RegEx.regExpressionArray.get(i + 1) == null){
+                        newStateTo1.setAccepts(true);
+                    }//if
+
+                    
+                    j++;
+
+                    
+
+                    currentState.setNext(newStateTo2);
+                    newStateTo2.setParent(currentState);
+
+                    if(alphabet.toString().contains(RegEx.regExpressionArray.get(i+1).toString())){
+                    
+                    }//if
+                    
+                    else{
+                        newStateTo2.setAccepts(true);
+                    }//else
+
+                    newTransition.setId(RegEx.regExpressionArray.get(i).toString());
+                    newTransition.setFrom(currentState);
+                    newTransition.setTo(newStateTo2);
+
+                    nfa.states.add(newStateTo2);
+
+                    currentState.transitions.add(newTransition);
+
+                    tempStateFrom = currentState;
+                    tempStateTo = newStateTo2;
+                    tempTransition = newTransition;
+
+                    currentState = newStateTo2;
+
+                }//if
+
+
 
             }//else
 
@@ -307,6 +472,22 @@ public class NFA {
                 System.out.println(" ");
                 */
 
+                //for strings of length 1 made up of the accepting char
+                if(testArray.length == 1){
+                    
+                    if (testArray[i].compareToIgnoreCase(stateCurrent.transitions.get(j).getId()) == 0){
+
+                        stateCurrent = stateCurrent.transitions.get(j).getTo();
+
+                        //if we are in an accepting state
+                        if(stateCurrent.getAccepts() == true){
+                            accepts = true;
+                        }//if
+                    
+                    }//if
+
+                }//if
+
                 //if the char is not in our alphabet then we reject
                 if(alphabet.toString().contains(testArray[i]) == false){
 
@@ -338,11 +519,7 @@ public class NFA {
                         accepts = false;
                     }//if
 
-                    //for strings of length 1 made up of the accepting char
-                    if(testArray.length == 1){
-                        accepts = true;
-                        return accepts;
-                    }//if
+                    
 
                     //if our next transtion is not null then we move to the next state.
                     if(stateCurrent.transitions.get(j).getNext() != null){
@@ -440,7 +617,7 @@ public class NFA {
                 System.out.println("j " + j);
                 System.out.println(" ");
                 */
-                
+
             }//for
 
         }//try
