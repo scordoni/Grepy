@@ -71,6 +71,7 @@ public class NFA {
             //if there is parenthesis in the regular expression
             if(RegEx.regExpressionArray.get(i).compareTo('(') == 0){
 
+                /*
                 //if the current state exists then mark its left paren flag
                 if(currentState.getId().compareToIgnoreCase(" ") == 0){
 
@@ -90,18 +91,20 @@ public class NFA {
                     leftParenFlag = 1;
 
                 }//else
-                
+                */
 
 
             }//if
 
             else if(RegEx.regExpressionArray.get(i).compareTo(')') == 0){
 
+                /*
                 currentState.setRightParenFlag(1);
 
                 tempStateRightParen = currentState;
 
                 rightParenFlag = 1;
+                */
 
             }//else if
 
@@ -122,6 +125,7 @@ public class NFA {
 
             else if(RegEx.regExpressionArray.get(i).compareTo('*') == 0){
 
+                /*
                 if(rightParenFlag == 1){
 
                     Transition newTransition = new Transition();
@@ -150,6 +154,7 @@ public class NFA {
                 }//if
 
                 else{
+                */
                     Transition newTransition = new Transition();
 
                     newTransition.setId("epsilon");
@@ -164,14 +169,15 @@ public class NFA {
 
                     tempTransition = newTransition;
 
-                }
+                //}
 
             }//else if
 
             //else we have a terminal symbol in our regular expression
             else{
 
-
+                //add to our alphabet
+                alphabet.add(RegEx.regExpressionArray.get(i).toString());
 
                 State newStateFrom1 = new State();
                 State newStateTo1 = new State();
@@ -181,29 +187,33 @@ public class NFA {
                 if(j == 0){
 
                     //add to our alphabet
-                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
+                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
 
                     //create our start state
                     newStateFrom1.setId("q0");
                     newStateFrom1.setAccepts(false);
 
+                    /*
                     if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
 
                         tempStateLeftParen = newStateFrom1;
 
                     }//if
+                    */
 
                     //set the root state
                     rootState = newStateFrom1;
 
                     //if the left paren flag has been set then we give the attribute to
                     //the first state
+                    /*
                     if(leftParenFlag == 1){
 
                         newStateFrom1.setLeftParenFlag(1);
                         tempStateLeftParen = newStateFrom1;
 
                     }//if
+                    */
 
                     j++;
 
@@ -233,12 +243,13 @@ public class NFA {
                     tempStateFrom = newStateFrom1;
                     tempStateTo = newStateTo1;
                     tempTransition = newTransition;
+
                 }//if
 
                 else if( (j != 0) && (alphabet.toString().contains(RegEx.regExpressionArray.get(i).toString()))){
 
                     //add to our alphabet
-                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
+                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
 
                     State newStateFrom2 = new State();
                     State newStateTo2 = new State();
@@ -247,11 +258,13 @@ public class NFA {
                     newStateFrom2.setId("q" + j);
                     newStateFrom2.setAccepts(false);
                     
+                    /*
                     if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
 
                         tempStateLeftParen = newStateFrom1;
 
                     }//if
+                    */
 
                     j++;
 
@@ -287,20 +300,22 @@ public class NFA {
                 if((i != 0) && ((RegEx.regExpressionArray.get(i-1).compareTo('+') == 0) || (RegEx.regExpressionArray.get(i-1).compareTo('|') == 0))){
                     
                     //add to our alphabet
-                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
+                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
                     
-                    System.out.println(rootState.getId());
+                    //System.out.println(rootState.getId());
                     
                     //create new root state
                 
                     newStateroot.setId("q");
                     newStateroot.setAccepts(false);
 
+                    /*
                     if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
 
                         tempStateLeftParen = newStateFrom1;
 
                     }//if
+                    */
 
                     Transition newTransition1 = new Transition();
 
@@ -344,7 +359,7 @@ public class NFA {
                 if((i != 0) && (alphabet.toString().contains(RegEx.regExpressionArray.get(i-1).toString()))){
                     
                     //add to our alphabet
-                    alphabet.add(RegEx.regExpressionArray.get(i).toString());
+                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
 
                     State newStateTo2 = new State();
 
@@ -354,10 +369,7 @@ public class NFA {
                         newStateTo1.setAccepts(true);
                     }//if
 
-                    
                     j++;
-
-                    
 
                     currentState.setNext(newStateTo2);
                     newStateTo2.setParent(currentState);
