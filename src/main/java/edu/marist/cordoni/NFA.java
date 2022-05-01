@@ -534,12 +534,12 @@ public class NFA {
                             stateCurrent = stateCurrent.transitions.get(j).getTo();
     
                             //if we are in an accepting state
-                            if(stateCurrent.getAccepts() == true){
+                            if((stateCurrent.getAccepts() == true)&&(stateCurrent.transitions.size() == 0)){
                                 accepts = true;
                                 return accepts;
                             }//if
 
-                            else if(stateCurrent.getAccepts() == false){
+                            else if((stateCurrent.getAccepts() == false)&&(stateCurrent.transitions.size() == 0)){
                                 accepts = false;
                                 return accepts;
                             }//if

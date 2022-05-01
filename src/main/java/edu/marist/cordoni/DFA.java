@@ -52,14 +52,35 @@ public class DFA {
             if(nfa.states.get(i).transitions.size() > 1){
 
                 //loop through the transitions to see if there are repeating transition id's
-                for(int k = 0; k < nfa.states.get(i).transitions.size() -1; k++){
+                for(int k = 0; k < nfa.states.get(i).transitions.size(); k++){
 
-                    
-                    if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase(nfa.states.get(i).transitions.get(k+1).getId()) == 0){
-                        System.out.println("Same id");
+                    //skip for epsilon
+                    if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase("epsilon") == 0){
+                        
                     }//if
 
+                    //else we add them to a temp id arraylist
                     else{
+
+                        tempID.add(nfa.states.get(i).transitions.get(k).getId());
+
+                    }//else
+
+                }//for
+
+                //now we loop through the arraylist
+                for(int l = 0; l < tempID.size(); l++){
+
+                    //if these two indexes are the same then we only have one instance of each transition for this state and we skip
+                    if(tempID.indexOf(l) == tempID.lastIndexOf(l)){
+
+
+                    }//if
+
+                    //else we have two transitions from this state with the same ID
+                    else{
+
+                        //we need to separate some states
 
                     }//else
 
@@ -182,18 +203,22 @@ public class DFA {
 
                     //for strings of length 1 made up of the accepting char
                     if(testArray.length == 1){
-                    
+
                         if (testArray[i].compareToIgnoreCase(stateCurrent.transitions.get(j).getId()) == 0){
-    
+
                             stateCurrent = stateCurrent.transitions.get(j).getTo();
+
+                            //System.out.println("current state id " + stateCurrent.getId());
     
                             //if we are in an accepting state
-                            if(stateCurrent.getAccepts() == true){
+                            if((stateCurrent.getAccepts() == true)&&(stateCurrent.transitions.size() == 0)){
+                                
                                 accepts = true;
                                 return accepts;
                             }//if
 
-                            else if(stateCurrent.getAccepts() == false){
+                            else if((stateCurrent.getAccepts() == false)&&(stateCurrent.transitions.size() == 0)){
+                                
                                 accepts = false;
                                 return accepts;
                             }//if
@@ -232,16 +257,14 @@ public class DFA {
                         */
                     }//if
 
-                    //else we return accepts
-                    else{
-                        
-                        return accepts;
-                    }//else
+                    //System.out.println(stateCurrent.transitions.get(j).getId());
 
                 }//If
 
+                
+
                 //no transitions left going to look for epsilon
-                else if(stateCurrent.transitions.get(j).getId().compareToIgnoreCase("epsilon") == 0){
+                if(stateCurrent.transitions.get(j).getId().compareToIgnoreCase("epsilon") == 0){
 
                     /*
                     System.out.println(" ");
@@ -265,6 +288,7 @@ public class DFA {
                         
                         //if we are in an accepting state then we can accept
                         if(stateCurrent.getAccepts() == true){
+                           
                             accepts = true;
                         }//if
 
@@ -273,6 +297,7 @@ public class DFA {
                     //if the next state not not have any transitions then we reject the testline and return
                     if(stateCurrent.transitions.get(j).getTo().transitions == null){
                        
+                        
                         accepts = false;
                         return accepts;
                         
@@ -286,7 +311,7 @@ public class DFA {
                         System.out.println("3 transtion state to id " + nfa.states.get(0).getId());
                         System.out.println(" ");
                         */
-
+                       
                         j++;
 
                         stateCurrent = dfa.states.get(0).transitions.get(j).getTo();

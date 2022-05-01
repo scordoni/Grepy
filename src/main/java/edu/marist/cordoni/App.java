@@ -117,17 +117,18 @@ public final class App {
                     if (NFA.accepts(line)) {
                         System.out.println(" ");
                         System.out.println("NFA Accepted: " + line);
-                        System.out.println(" ");
+                        
                     }//if
 
                     else {
                         System.out.println(" ");
                         System.out.println("NFA Rejected: " + line);
-                        System.out.println(" ");
+                        
                     }//else
                          
 
                     //Check if DFA accepts
+                    //dfa does not work as great as nfa stuff
                     
                     if (DFA.accepts(line)) {
                         System.out.println(" ");
@@ -146,7 +147,6 @@ public final class App {
 
                 System.out.println(" ");
                 System.out.println("DOT format outputed to DOT file named: DOTGraph.txt");
-                System.out.println(" ");
                 DOT.printNFADFA();
 
             } //else
@@ -162,7 +162,6 @@ public final class App {
 
         } //catch  
 
-        System.out.println(" ");
         System.out.println("Grep Completed");
 
         System.exit(returnCode);
