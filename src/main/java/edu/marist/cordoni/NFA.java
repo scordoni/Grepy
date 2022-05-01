@@ -29,6 +29,9 @@ public class NFA {
     //import the array from the Regex class 
     public static void createNFA(ArrayList<Character> regularExpression) {
 
+
+        //reset Variables
+
         State currentState = new State();
 
         State rootState = new State();
@@ -63,6 +66,7 @@ public class NFA {
         System.out.println(" ");
         System.out.println("Start Creation of NFA");
 
+        //loop through the regular expression array
         for(int i = 0; i < RegEx.regExpressionArray.size(); i++){
 
             //System.out.println("Current State ID " + currentState.getId());
@@ -123,6 +127,7 @@ public class NFA {
 
             }//else if
 
+            //else if we have a kleene star
             else if(RegEx.regExpressionArray.get(i).compareTo('*') == 0){
 
                 /*
@@ -155,6 +160,8 @@ public class NFA {
 
                 else{
                 */
+                    
+                    //else we create a new epsilon transition
                     Transition newTransition = new Transition();
 
                     newTransition.setId("epsilon");
@@ -179,20 +186,20 @@ public class NFA {
                 //add to our alphabet
                 alphabet.add(RegEx.regExpressionArray.get(i).toString());
 
-                State newStateFrom1 = new State();
-                State newStateTo1 = new State();
-
-                Transition newTransition = new Transition();
-
+                //if j == 0, in other words we just started our nfa creation
                 if(j == 0){
 
-                    //add to our alphabet
-                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
+                    //create 2 new states and a transition
+                    State newStateFrom1 = new State();
+                    State newStateTo1 = new State();
+
+                    Transition newTransition = new Transition();
 
                     //create our start state
                     newStateFrom1.setId("q0");
                     newStateFrom1.setAccepts(false);
 
+                    //left commented out in regard to parens
                     /*
                     if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
 
@@ -219,45 +226,51 @@ public class NFA {
 
                     newStateTo1.setId("q1");
 
-                    if(RegEx.regExpressionArray.get(i + 1) == null){
+                    if((RegEx.regExpressionArray.get(i + 1) == null)||(alphabet.toString().contains(RegEx.regExpressionArray.get(i + 1).toString()) == false)){
                         newStateTo1.setAccepts(true);
                     }//if
 
-                    
-
+                    //set a new current state
                     currentState = newStateTo1;
+
                     j++;
 
+                    //set next and parent for the respective states
                     newStateFrom1.setNext(newStateTo1);
                     newStateTo1.setParent(newStateFrom1);
 
+                    //set the new transition
                     newTransition.setId(RegEx.regExpressionArray.get(i).toString());
                     newTransition.setFrom(newStateFrom1);
                     newTransition.setTo(newStateTo1);
 
+                    //add the states to the graph
                     nfa.states.add(newStateFrom1);
                     nfa.states.add(newStateTo1);
 
                     newStateFrom1.transitions.add(newTransition);
 
+                    //set the global temp states to be used elsewhere
                     tempStateFrom = newStateFrom1;
                     tempStateTo = newStateTo1;
                     tempTransition = newTransition;
 
                 }//if
 
+                //if j is not equal to 0 and out current index in the regular expression array is contained in our alphabet
                 else if( (j != 0) && (alphabet.toString().contains(RegEx.regExpressionArray.get(i).toString()))){
 
-                    //add to our alphabet
-                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
-
+                    //create 2 new states and transition
                     State newStateFrom2 = new State();
                     State newStateTo2 = new State();
+
+                    Transition newTransition = new Transition();
 
                     //create our start state
                     newStateFrom2.setId("q" + j);
                     newStateFrom2.setAccepts(false);
                     
+                    //left comments out for parens
                     /*
                     if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
 
@@ -270,45 +283,44 @@ public class NFA {
 
                     newStateTo2.setId("q"+ j);
                     
-                    if(RegEx.regExpressionArray.get(i + 1) == null){
-                        newStateTo1.setAccepts(true);
+                    if(i == RegEx.regExpressionArray.size()){
+                        newStateTo2.setAccepts(true);
                     }//if
                     
                     currentState = newStateTo2;
                     j++;
 
+                    //set parent and next for the respective states
                     newStateFrom2.setNext(newStateTo2);
                     newStateTo2.setParent(newStateFrom2);
 
+                    //set new transtiion information
                     newTransition.setId(RegEx.regExpressionArray.get(i).toString());
                     newTransition.setFrom(newStateFrom2);
                     newTransition.setTo(newStateTo2);
 
+                    //add the new states to the graph
                     nfa.states.add(newStateFrom2);
                     nfa.states.add(newStateTo2);
 
+                    //add the new transition to the respective state
                     newStateFrom2.transitions.add(newTransition);
 
+                    //set the global temp variables
                     tempStateFrom = newStateFrom2;
                     tempStateTo = newStateTo2;
                     tempTransition = newTransition;
 
                 }//else
                 
-
-
+                //if we are not in the first spot of our regular expression array and we hit an 'or' statement
                 if((i != 0) && ((RegEx.regExpressionArray.get(i-1).compareTo('+') == 0) || (RegEx.regExpressionArray.get(i-1).compareTo('|') == 0))){
                     
-                    //add to our alphabet
-                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
-                    
-                    //System.out.println(rootState.getId());
-                    
                     //create new root state
-                
                     newStateroot.setId("q");
                     newStateroot.setAccepts(false);
 
+                    //left commented out for parens
                     /*
                     if((i != 0 ) && (RegEx.regExpressionArray.get(i-1).compareTo('(') == 0)){
 
@@ -317,6 +329,7 @@ public class NFA {
                     }//if
                     */
 
+                    //create 2 new epsilon transitions and set their information
                     Transition newTransition1 = new Transition();
 
                     newTransition1.setId("epsilon");
@@ -329,15 +342,15 @@ public class NFA {
                     newTransition2.setFrom(newStateroot);
                     newTransition2.setTo(rootState);
 
-
-
                     //newTransition.setId(RegEx.regExpressionArray.get(i+1).toString());
                     //newTransition.setFrom(tempStateFrom);
                     //newTransition.setTo(tempStateTo);
 
+                    //add the transitions to the new root state
                     newStateroot.transitions.add(newTransition1);
                     newStateroot.transitions.add(newTransition2);
 
+                    //add the new root state to the graph to the beginning of the graphs state arraylist
                     temp.add(newStateroot);
 
                     for(int h = 0; h < nfa.states.size(); h++){
@@ -345,28 +358,28 @@ public class NFA {
                         temp.add(nfa.states.get(h));
                     }//for
 
-
                     nfa.states.clear();
 
                     nfa.states = temp;
 
                     //tempTransition.setNext(newTransition);
-
                     //tempTransition = newTransition;
 
                 }//if
 
+                //if i is not equal to 0 and the previous in our array is already in our alphabet
                 if((i != 0) && (alphabet.toString().contains(RegEx.regExpressionArray.get(i-1).toString()))){
                     
-                    //add to our alphabet
-                    //alphabet.add(RegEx.regExpressionArray.get(i).toString());
-
+                    //create a new state and transition
                     State newStateTo2 = new State();
+
+                    Transition newTransition = new Transition();
 
                     newStateTo2.setId("q"+ j);
                     
-                    if(RegEx.regExpressionArray.get(i + 1) == null){
-                        newStateTo1.setAccepts(true);
+                    //if we have reached the end of our array then we set the state to accept
+                    if(i == RegEx.regExpressionArray.size()){
+                        newStateTo2.setAccepts(true);
                     }//if
 
                     j++;
@@ -374,6 +387,8 @@ public class NFA {
                     currentState.setNext(newStateTo2);
                     newStateTo2.setParent(currentState);
 
+                    //possible delete
+                    /*
                     if(alphabet.toString().contains(RegEx.regExpressionArray.get(i+1).toString())){
                     
                     }//if
@@ -381,11 +396,14 @@ public class NFA {
                     else{
                         newStateTo2.setAccepts(true);
                     }//else
+                    */
 
+                    //set new transition information
                     newTransition.setId(RegEx.regExpressionArray.get(i).toString());
                     newTransition.setFrom(currentState);
                     newTransition.setTo(newStateTo2);
 
+                    //add new transition to the state
                     nfa.states.add(newStateTo2);
 
                     currentState.transitions.add(newTransition);
@@ -436,17 +454,10 @@ public class NFA {
 
         }//for
 
-        /*
-        for(int i = 0 ; i < nfa.transitions.size(); i++){
 
-            System.out.println("Transition Id: " + nfa.transitions.get(i).getId());
-            System.out.println("From: " + nfa.transitions.get(i).getFrom().getId());
-            System.out.println("To: " + nfa.transitions.get(i).getTo().getId());
-            
-            System.out.println(" ");
+        //pass it on
 
-        }//for
-        */
+        DFA.createDFA(nfa);
 
     }//createNFA
 
@@ -484,22 +495,6 @@ public class NFA {
                 System.out.println(" ");
                 */
 
-                //for strings of length 1 made up of the accepting char
-                if(testArray.length == 1){
-                    
-                    if (testArray[i].compareToIgnoreCase(stateCurrent.transitions.get(j).getId()) == 0){
-
-                        stateCurrent = stateCurrent.transitions.get(j).getTo();
-
-                        //if we are in an accepting state
-                        if(stateCurrent.getAccepts() == true){
-                            accepts = true;
-                        }//if
-                    
-                    }//if
-
-                }//if
-
                 //if the char is not in our alphabet then we reject
                 if(alphabet.toString().contains(testArray[i]) == false){
 
@@ -529,6 +524,28 @@ public class NFA {
                     //if we are not in an accepting state
                     if(stateCurrent.getAccepts() == false){
                         accepts = false;
+                    }//if
+
+                    //for strings of length 1 made up of the accepting char
+                    if(testArray.length == 1){
+                    
+                        if (testArray[i].compareToIgnoreCase(stateCurrent.transitions.get(j).getId()) == 0){
+    
+                            stateCurrent = stateCurrent.transitions.get(j).getTo();
+    
+                            //if we are in an accepting state
+                            if(stateCurrent.getAccepts() == true){
+                                accepts = true;
+                                return accepts;
+                            }//if
+
+                            else if(stateCurrent.getAccepts() == false){
+                                accepts = false;
+                                return accepts;
+                            }//if
+                        
+                        }//if
+    
                     }//if
 
                     

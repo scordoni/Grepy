@@ -37,6 +37,8 @@ public class DFA {
 
         ArrayList <State> temp = new ArrayList <State>();
 
+        ArrayList <String> tempID = new ArrayList <String>();
+
 
         int j = 0;
 
@@ -49,12 +51,38 @@ public class DFA {
             //different id
             if(nfa.states.get(i).transitions.size() > 1){
 
+                //loop through the transitions to see if there are repeating transition id's
+                for(int k = 0; k < nfa.states.get(i).transitions.size() -1; k++){
+
+                    
+                    if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase(nfa.states.get(i).transitions.get(k+1).getId()) == 0){
+                        System.out.println("Same id");
+                    }//if
+
+                    else{
+
+                    }//else
+
+                }//for
                 
 
             }//if
 
             //else we skip because then our state only has one transition
+            //and we set out dfa to equal our nfa
             else{
+
+                //create a new state 
+                State newState = new State();
+
+                //set the state to be equal to the nfa state with only 1 transition
+                newState = nfa.states.get(i);
+
+                //add it to the dfa states arraylist
+                dfa.states.add(newState);
+
+                //set the current state
+                currentState = newState;
 
 
             }//else
@@ -63,6 +91,7 @@ public class DFA {
 
         }//for
 
+        //print out the DFA states
         for(int i = 0 ; i < dfa.states.size(); i++){
 
             System.out.println("State Id: " + dfa.states.get(i).getId());
@@ -129,8 +158,9 @@ public class DFA {
                 System.out.println(" ");
                 */
 
+
                 //if the char is not in our alphabet then we reject
-                if(alphabet.toString().contains(testArray[i]) == false){
+                if(NFA.alphabet.toString().contains(testArray[i]) == false){
 
                     accepts = false;
                     return accepts;
@@ -150,6 +180,28 @@ public class DFA {
                     System.out.println(" ");
                     */
 
+                    //for strings of length 1 made up of the accepting char
+                    if(testArray.length == 1){
+                    
+                        if (testArray[i].compareToIgnoreCase(stateCurrent.transitions.get(j).getId()) == 0){
+    
+                            stateCurrent = stateCurrent.transitions.get(j).getTo();
+    
+                            //if we are in an accepting state
+                            if(stateCurrent.getAccepts() == true){
+                                accepts = true;
+                                return accepts;
+                            }//if
+
+                            else if(stateCurrent.getAccepts() == false){
+                                accepts = false;
+                                return accepts;
+                            }//if
+                        
+                        }//if
+    
+                    }//if
+
                     //if we are in an accepting state
                     if(stateCurrent.getAccepts() == true){
                         accepts = true;
@@ -160,11 +212,7 @@ public class DFA {
                         accepts = false;
                     }//if
 
-                    //for strings of length 1 made up of the accepting char
-                    if(testArray.length == 1){
-                        accepts = true;
-                        return accepts;
-                    }//if
+                    
 
                     //if our next transtion is not null then we move to the next state.
                     if(stateCurrent.transitions.get(j).getNext() != null){
@@ -262,7 +310,7 @@ public class DFA {
                 System.out.println("j " + j);
                 System.out.println(" ");
                 */
-                
+
             }//for
 
         }//try
