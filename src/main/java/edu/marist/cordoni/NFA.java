@@ -167,9 +167,27 @@ public class NFA {
                     newTransition.setId("epsilon");
                     newTransition.setFrom(tempStateTo);
                     newTransition.setTo(tempStateFrom);
-                    tempStateFrom.setAccepts(true);
-                    tempStateTo.setAccepts(false);
 
+                    System.out.println("i " + i);
+                    System.out.println("size " + RegEx.regExpressionArray.size());
+
+                    //if there is still more to process then we cannot accept it
+                    //if(RegEx.regExpressionArray.get(i + 1) != null){
+
+                        //tempStateFrom.setAccepts(false);
+                        //tempStateTo.setAccepts(false);
+
+                    //}//if
+
+                    //else{
+
+                        tempStateFrom.setAccepts(true);
+                        tempStateTo.setAccepts(false);
+
+                    //}//else
+
+                    
+                    //add the new transition
                     tempStateTo.transitions.add(newTransition);
 
                     tempTransition.setNext(newTransition);

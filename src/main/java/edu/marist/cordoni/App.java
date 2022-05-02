@@ -110,7 +110,7 @@ public final class App {
                     //while there is a next line we set it to a temp variable
                     line = input.nextLine();
 
-                    System.out.println(line);
+                    //System.out.println(line);
 
                     //Check if NFA accepts
 
@@ -129,7 +129,9 @@ public final class App {
 
                     //Check if DFA accepts
                     //dfa does not work as great as nfa stuff
-                    
+                    //feel free to un comment
+
+                    /*
                     if (DFA.accepts(line)) {
                         System.out.println(" ");
                         System.out.println("DFA Accepted: " + line);
@@ -141,13 +143,14 @@ public final class App {
                         System.out.println("DFA Rejected: " + line);
                         System.out.println(" ");
                     }//else
-                    
+                    */
 
                 } //while
 
                 System.out.println(" ");
                 System.out.println("DOT format outputed to DOT file named: DOTGraph.txt");
-                DOT.printNFADFA();
+                DOT.printNFA();
+                DOT.printDFA();
 
             } //else
 

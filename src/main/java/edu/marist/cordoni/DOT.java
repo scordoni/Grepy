@@ -20,11 +20,11 @@ public class DOT {
 
     
 
-    public static void printNFADFA(){
+    public static void printNFA(){
 
         try {
 
-            FileWriter myWriter = new FileWriter("DOTGraph.txt");
+            FileWriter myWriter = new FileWriter("NFADOTGraph.txt");
 
 
             myWriter.write("digraph graph {");
@@ -54,6 +54,43 @@ public class DOT {
           }//catch
 
 
-    }//printNFADFA
+    }//printNFA
+
+
+    public static void printDFA(){
+
+        try {
+
+            FileWriter myWriter = new FileWriter("DFADOTGraph.txt");
+
+
+            myWriter.write("digraph graph {");
+            
+            for(int i = 0; i < DFA.dfa.states.size(); i++){
+
+                for(int j = 0; j < DFA.dfa.states.get(i).transitions.size(); j++){
+                    
+                    myWriter.write("\r\n");
+                    myWriter.write(DFA.dfa.states.get(i).getId() + " -> " + DFA.dfa.states.get(i).transitions.get(j).getTo().getId());
+                    myWriter.write("\r\n");
+                    
+                }//for
+    
+            }//for
+            
+            myWriter.write("}");
+            myWriter.close();
+
+          }//try
+          
+          catch (IOException e) {
+
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+
+          }//catch
+
+
+    }//printDFA
     
 }//dot 

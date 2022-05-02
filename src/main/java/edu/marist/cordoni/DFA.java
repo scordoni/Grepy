@@ -23,24 +23,13 @@ public class DFA {
     //import the array from the Regex class 
     public static void createDFA(Graph nfa) {
 
-        State currentState = new State();
-
-        State rootState = new State();
-
         dfa = new Graph();
 
-        State tempStateTo = new State();
+        String tempID1 = "";
 
-        State tempStateFrom = new State();
-
-        Transition tempTransition = new Transition();
-
-        ArrayList <State> temp = new ArrayList <State>();
+        String tempID2 = "";
 
         ArrayList <String> tempID = new ArrayList <String>();
-
-
-        int j = 0;
 
         System.out.println(" ");
         System.out.println("Start Creation of DFA");
@@ -54,25 +43,34 @@ public class DFA {
                 //loop through the transitions to see if there are repeating transition id's
                 for(int k = 0; k < nfa.states.get(i).transitions.size(); k++){
 
-                    //skip for epsilon
-                    if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase("epsilon") == 0){
-                        
-                    }//if
-
-                    //else we add them to a temp id arraylist
-                    else{
-
-                        tempID.add(nfa.states.get(i).transitions.get(k).getId());
-
-                    }//else
+                    tempID.add(nfa.states.get(i).transitions.get(k).getId());
 
                 }//for
 
-                //now we loop through the arraylist
-                for(int l = 0; l < tempID.size(); l++){
-
+                for(int k = 0; k < nfa.states.get(i).transitions.size(); k++){
+                    
                     //if these two indexes are the same then we only have one instance of each transition for this state and we skip
-                    if(tempID.indexOf(l) == tempID.lastIndexOf(l)){
+                    if(tempID.indexOf(nfa.states.get(i).transitions.get(k).getId()) == tempID.lastIndexOf(nfa.states.get(i).transitions.get(k).getId())){
+
+                        //each transition has different Id's so we can skip
+
+                        //if we have one epsilong transition that means we have a kleene star
+                        if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase("epsilon") == 0){
+
+                            //create a new transition from the state to itself.
+                            Transition tempTransition = new Transition();
+
+                            tempTransition.setId(nfa.states.get(i).transitions.get(k-1).getId());
+                            tempTransition.setFrom(nfa.states.get(i));
+                            tempTransition.setTo(nfa.states.get(i));
+
+                            //set the current state accepts to true
+                            nfa.states.get(i).setAccepts(true);
+
+                            //remove the epsilon transition
+                            nfa.states.get(i).transitions.remove(k);
+
+                        }//if
 
 
                     }//if
@@ -82,10 +80,64 @@ public class DFA {
 
                         //we need to separate some states
 
+                        //in the case we have an apsilong transitition that means we have an 'or'
+                        if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase("epsilon") == 0){
+
+                            //System.out.println("hello there " + nfa.states.get(i).getId());
+
+                            //System.out.println("hello there 1 " + nfa.states.get(i).transitions.get(k).getId().toString());
+
+                            //System.out.println("hello there 2 " + nfa.states.get(i).transitions.get(k).getTo().getId());
+
+                            //set out two temp IDS so that we can skip these states
+                            if(tempID1.compareToIgnoreCase("") == 0){
+                                tempID1 = nfa.states.get(i).transitions.get(k).getTo().getId();
+                            }//if
+
+                            else{
+                                tempID2 = nfa.states.get(i).transitions.get(k).getTo().getId();
+                            }//else
+
+                            State tempState = new State();
+
+                            tempState.setId("q");
+
+                            //add the transitions from our 'to' states
+                            for(int d = 0; d < nfa.states.get(i).transitions.get(k).getTo().transitions.size() ; d++){
+
+                                tempState.transitions.add(nfa.states.get(i).transitions.get(k).getTo().transitions.get(d));
+                            
+                            }//for
+
+                            //check if we need to accpet in this state
+                            if(nfa.states.get(i).transitions.get(k).getTo().getAccepts() == true){
+                                tempState.setAccepts(true);
+                            }//if
+
+                            else{
+                                tempState.setAccepts(false);
+                            }//else
+
+                            //add to our dfa
+                            dfa.states.add(tempState);
+
+                            //set the current state
+                            currentState = tempState;
+
+                        }//if
+
+                        //else we have an ID repeated
+                        else{
+
+
+
+                        }//else
+
+                        
+
                     }//else
 
                 }//for
-                
 
             }//if
 
