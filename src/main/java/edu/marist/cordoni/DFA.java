@@ -29,10 +29,12 @@ public class DFA {
 
         String tempID2 = "";
 
+        String doubleTemp = "";
+
         ArrayList <String> tempID = new ArrayList <String>();
 
-        System.out.println(" ");
-        System.out.println("Start Creation of DFA");
+        //System.out.println(" ");
+        //System.out.println("Start Creation of DFA");
 
         for(int i = 0; i < nfa.states.size(); i++){
 
@@ -53,6 +55,7 @@ public class DFA {
                     if(tempID.indexOf(nfa.states.get(i).transitions.get(k).getId()) == tempID.lastIndexOf(nfa.states.get(i).transitions.get(k).getId())){
 
                         //each transition has different Id's so we can skip
+                        doubleTemp = nfa.states.get(i).transitions.get(k).getId();
 
                         //if we have one epsilong transition that means we have a kleene star
                         if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase("epsilon") == 0){
@@ -129,7 +132,16 @@ public class DFA {
                         //else we have an ID repeated
                         else{
 
+                            //if the transition id matches the is that shows up twice
+                            if(nfa.states.get(i).transitions.get(k).getId().compareToIgnoreCase(doubleTemp) == 0){
 
+
+                                nfa.states.get(i).transitions.remove(k);
+
+                                dfa.states.add(nfa.states.get(i));
+                                
+
+                            }//if
 
                         }//else
 
@@ -164,6 +176,8 @@ public class DFA {
 
         }//for
 
+        //uncomment to print out each state and its transitions
+        /*
         //print out the DFA states
         for(int i = 0 ; i < dfa.states.size(); i++){
 
@@ -195,6 +209,7 @@ public class DFA {
             }//for
 
         }//for
+        */
 
     }//createDFA
 

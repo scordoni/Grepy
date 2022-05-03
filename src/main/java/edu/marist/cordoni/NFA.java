@@ -60,11 +60,12 @@ public class NFA {
 
         rightParenFlag = 0;
 
-
+        /*
         System.out.println(" ");
         System.out.println("Regular Expression Array: " + RegEx.regExpressionArray.toString());
         System.out.println(" ");
         System.out.println("Start Creation of NFA");
+        */
 
         //loop through the regular expression array
         for(int i = 0; i < RegEx.regExpressionArray.size(); i++){
@@ -168,8 +169,8 @@ public class NFA {
                     newTransition.setFrom(tempStateTo);
                     newTransition.setTo(tempStateFrom);
 
-                    System.out.println("i " + i);
-                    System.out.println("size " + RegEx.regExpressionArray.size());
+                    //System.out.println("i " + i);
+                    //System.out.println("size " + RegEx.regExpressionArray.size());
 
                     //if there is still more to process then we cannot accept it
                     //if(RegEx.regExpressionArray.get(i + 1) != null){
@@ -441,6 +442,8 @@ public class NFA {
 
         }//for
 
+        //uncomment to print out each state and its transitions
+        /*
         for(int i = 0 ; i < nfa.states.size(); i++){
 
             System.out.println("State Id: " + nfa.states.get(i).getId());
@@ -471,7 +474,7 @@ public class NFA {
             }//for
 
         }//for
-
+        */
 
         //pass it on
 

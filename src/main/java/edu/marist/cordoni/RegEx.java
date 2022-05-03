@@ -19,9 +19,9 @@ public class RegEx {
 
     public static void regex(String regularExpression) {
 
-        System.out.println("Regular Expression: " + regularExpression);
+        //System.out.println("Regular Expression: " + regularExpression);
 
-        System.out.println("Regular Expression Length: " + regularExpression.length());
+        //System.out.println("Regular Expression Length: " + regularExpression.length());
 
         for(int i = 0; i < regularExpression.length(); i++){
 

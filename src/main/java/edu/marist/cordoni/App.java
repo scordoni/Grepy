@@ -36,11 +36,13 @@ public final class App {
 
         String[] cmdArgs = cmdLine.getArgs();
 
+        /*
         System.out.println(" ");
 
         System.out.println("Parameter Argument Length: " + cmdArgs.length);
 
         System.out.println(" ");
+        */
 
         /*
         if(cmdArgs.length == 2){
@@ -69,6 +71,7 @@ public final class App {
 
         file = args[1]; 
 
+        /*
         System.out.println(" ");
 
         System.out.println("Regular Expression: " + regex);
@@ -76,7 +79,7 @@ public final class App {
         System.out.println("Input File: " + file);
 
         System.out.println(" ");
-        
+        */
     
         //create the reference to the file
         File myFile = new File(file);
@@ -90,7 +93,7 @@ public final class App {
             //regex to NFA
             RegEx.regex(regex);
 
-            System.out.println(" ");
+            //System.out.println(" ");
 
             
             //if the file is empty we let the user know there is nothing in the file
@@ -103,7 +106,7 @@ public final class App {
             //else we can run through the file to create the programs
             else {
 
-                System.out.println("Input File: ");
+                //System.out.println("Input File: ");
 
                 while(input.hasNext()) {
 
@@ -116,13 +119,14 @@ public final class App {
 
                     if (NFA.accepts(line)) {
                         System.out.println(" ");
-                        System.out.println("NFA Accepted: " + line);
+                        //System.out.println("NFA Accepted: " + line);
+                        System.out.println(line);
                         
                     }//if
 
                     else {
                         System.out.println(" ");
-                        System.out.println("NFA Rejected: " + line);
+                        //System.out.println("NFA Rejected: " + line);
                         
                     }//else
                          
@@ -147,8 +151,10 @@ public final class App {
 
                 } //while
 
-                System.out.println(" ");
-                System.out.println("DOT format outputed to DOT file named: DOTGraph.txt");
+                //DOT Output
+                
+                //System.out.println(" ");
+                //System.out.println("DOT format outputed to DOT file named: DOTGraph.txt");
                 DOT.printNFA();
                 DOT.printDFA();
 
